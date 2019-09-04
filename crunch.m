@@ -1,11 +1,12 @@
 function crunch(mfile,varargin)
+    expected_compressor = {'java','7zip','advzip','zopfli'};
 
     p = inputParser;
     addRequired(p,'input',@(x) exist(x,'file'));
     addParameter(p,'output','',@ischar);
     addParameter(p,'main','k',@ischar);
-    addParameter(p,'sevenzip','7za.exe');
-    addParameter(p,'advzip','advzip.exe');
+    addParameter(p,'exe',[]);
+    addParameter(p,'compressor','zopfli',@(x) any(validatestring(x,expected_compressor)))
     addParameter(p,'minify',true);
     parse(p,mfile,varargin{:});
 
@@ -44,34 +45,36 @@ function crunch(mfile,varargin)
         cd(outputpath);
     end
         
-    if exist(p.Results.sevenzip,'file')
-        command = ['"' which(p.Results.sevenzip) '" a -mx=9 -mtc=off "' archivefile '" ' mainfile];
-        system(command);
+    if strcmp(p.Results.compressor,'zopfli')
+        zopfli_zip(archivefile,mainfile,'exe',p.Results.exe);
+    elseif strcmp(p.Results.compressor,'advzip')
+        zip(archivefile,mainfile);
+        exe = p.Results.exe;
+        if isempty(exe)
+            exe = 'advzip';
+        end
+        cmd_f = '%s --shrink-insane -i 100 %s';
+        cmd = sprintf(cmd_f,exe,archivefile);
+        system(cmd);
+    elseif strcmp(p.Results.compressor,'7zip')
+        exe = p.Results.exe;
+        if isempty(exe)
+            exe = '7za';
+        end
+        cmd_f = '%s a -mx=9 -mtc=off "%s" %s';
+        cmd = sprintf(cmd_f,exe,archivefile,mainfile);
+        if system(cmd) > 0
+            [~,exename,~] = fileparts(exe);    
+            cmd = sprintf(cmd_f,which([exename '.exe']),archivefile,mainfile);
+            system(cmd);
+        end
     else
-        zip(archivefile,sprintf('%s',mainfile));
+        zip(archivefile,mainfile);
     end
+    
     cd(origdir);
-
-    if exist(p.Results.advzip,'file')
-        command = ['"' which(p.Results.advzip) '" --shrink-insane -i 100 "' archive '"'];
-        % system(command);
-    end
-
+    
     sea(archive,'output',pfile);
 end
-
-    
-function writefile(filename,str)
-    f = fopen(filename,'w');
-    fwrite(f,str);
-    fclose(f);
-end
-
-function str = readfile(filename)
-    f = fopen(filename);
-    str = fread(f)';
-    fclose(f);
-end
-    
 
 

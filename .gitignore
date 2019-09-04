@@ -1,0 +1,7 @@
+*.asv
+*.pdf
+/**/cache/
+/**/ignore/
+/**/~*.docx
+*.png
+*.exe
