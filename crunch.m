@@ -4,7 +4,7 @@ function crunch(mfile,varargin)
     p = inputParser;
     addRequired(p,'input',@(x) exist(x,'file'));
     addParameter(p,'output','',@ischar);
-    addParameter(p,'main','a',@ischar);
+    addParameter(p,'main','z',@ischar);
     addParameter(p,'exe',[]);
     addParameter(p,'compressor','zopfli',@(x) any(validatestring(x,expected_compressor)))
     parse(p,mfile,varargin{:});

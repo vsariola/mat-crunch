@@ -5,8 +5,8 @@ function sea(archive,varargin)
     addRequired(p,'input');
     addParameter(p,'output','',@ischar);
     addParameter(p,'remove_temp',true);   
-    addParameter(p,'main','a'); 
-    addParameter(p,'variable','f'); 
+    addParameter(p,'var1','a'); 
+    addParameter(p,'var2','r'); 
     addParameter(p,'cache',true); 
     addParameter(p,'rename_support','full',@(x) any(validatestring(x,expected_rename)))
     parse(p,archive,varargin{:});
@@ -29,10 +29,10 @@ function sea(archive,varargin)
     end
     outputfile = fullfile(outputpath,[outputname outputext]);
     
-    f = '%1$s=tempname;unzip(%3$s,%1$s);run([%1$s,''/%2$s''])';
+    f = '%1$s=tempname,%2$s=unzip(%3$s,%1$s),run(%2$s{1})';
     
     if p.Results.remove_temp
-        f = [f ';rmdir(%1$s,''s'')'];
+        f = [f ',rmdir(%1$s,''s'')'];
     end
     
     if strcmp(p.Results.rename_support,'full')
@@ -43,7 +43,7 @@ function sea(archive,varargin)
         namecmd = ['''' outputname outputext ''''];
     end
     
-    scr = sprintf(f,p.Results.variable,p.Results.main,namecmd);
+    scr = sprintf(f,p.Results.var1,p.Results.var2,namecmd);
     
     scriptfile = ['s' num2str(hash(scr))];
     
