@@ -4,10 +4,9 @@ function crunch(mfile,varargin)
     p = inputParser;
     addRequired(p,'input',@(x) exist(x,'file'));
     addParameter(p,'output','',@ischar);
-    addParameter(p,'main','k',@ischar);
+    addParameter(p,'main','a',@ischar);
     addParameter(p,'exe',[]);
     addParameter(p,'compressor','zopfli',@(x) any(validatestring(x,expected_compressor)))
-    addParameter(p,'minify',true);
     parse(p,mfile,varargin{:});
 
     [inputpath,inputname,inputext] = fileparts(p.Results.input);

@@ -5,8 +5,8 @@ function sea(archive,varargin)
     addRequired(p,'input');
     addParameter(p,'output','',@ischar);
     addParameter(p,'remove_temp',true);   
-    addParameter(p,'main','k'); 
-    addParameter(p,'variable','q'); 
+    addParameter(p,'main','a'); 
+    addParameter(p,'variable','f'); 
     addParameter(p,'cache',true); 
     addParameter(p,'rename_support','full',@(x) any(validatestring(x,expected_rename)))
     parse(p,archive,varargin{:});
@@ -36,7 +36,7 @@ function sea(archive,varargin)
     end
     
     if strcmp(p.Results.rename_support,'full')
-        namecmd = '[mfilename(''fullpath''),''.p'']';
+        namecmd = 'which(mfilename)';
     elseif strcmp(p.Results.rename_support,'partial')
         namecmd = '[mfilename,''.p'']';
     else
