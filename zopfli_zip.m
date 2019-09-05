@@ -27,13 +27,13 @@ function zopfli_zip(output,input,varargin)
     
     fh_start = fromhex('504b0304140002000800');
 
-    fh = zeros(1,30+length(inputfile));
+     % no need to repeat the filename in local header - matlab unzip seems
+     % to use only the filename from central directory
+    fh = zeros(1,30);
     fh(1:length(fh_start)) = fh_start;
     fh(15:18) = to_le(c32,4);
     fh(19:22) = to_le(length(compressed_data),4);
-    fh(23:26) = to_le(length(uncompressed_data),4);
-    fh(27:28) = to_le(length(inputfile),2);
-    fh(31:end) = inputfile;
+    fh(23:26) = to_le(length(uncompressed_data),4);        
     
     cdfh_start = fromhex('504b01023f00140002000800');
     
