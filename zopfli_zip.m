@@ -1,5 +1,6 @@
 function zopfli_zip(output,input,varargin)
     p = inputParser;
+    p.KeepUnmatched = true;
     addRequired(p,'output');
     addRequired(p,'input');
     addParameter(p,'iter',100);

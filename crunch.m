@@ -2,6 +2,7 @@ function crunch(mfile,varargin)
     expected_compressor = {'java','7zip','advzip','zopfli'};
 
     p = inputParser;
+    p.KeepUnmatched = true;
     addRequired(p,'input',@(x) exist(x,'file'));
     addParameter(p,'output','',@ischar);
     addParameter(p,'main','z',@ischar);
@@ -45,7 +46,7 @@ function crunch(mfile,varargin)
     end
         
     if strcmp(p.Results.compressor,'zopfli')
-        zopfli_zip(archivefile,mainfile,'exe',p.Results.exe);
+        zopfli_zip(archivefile,mainfile,'exe',p.Results.exe,varargin{:});
     elseif strcmp(p.Results.compressor,'advzip')
         zip(archivefile,mainfile);
         exe = p.Results.exe;
@@ -73,7 +74,7 @@ function crunch(mfile,varargin)
     
     cd(origdir);
     
-    sea(archive,'output',pfile);
+    sea(archive,'output',pfile,'main',p.Results.main,varargin{:});
 end
 
 
