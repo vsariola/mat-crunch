@@ -10,6 +10,7 @@ function sea(archive,varargin)
     addParameter(p,'var1','a'); 
     addParameter(p,'var2','r'); 
     addParameter(p,'main','z'); 
+    addParameter(p,'use_comma',true); 
     addParameter(p,'cache',true); 
     addParameter(p,'rename_support','full',@(x) any(validatestring(x,expected_rename)))
     parse(p,archive,varargin{:});
@@ -33,9 +34,9 @@ function sea(archive,varargin)
     outputfile = fullfile(outputpath,[outputname outputext]);
     
     if p.Results.use_tempdir
-        f = '%1$s=tempname,%2$s=unzip(%3$s,%1$s),run(%2$s{1})';
+        f = '%1$s=tempname;%2$s=unzip(%3$s,%1$s);run(%2$s{1})';
         if p.Results.remove_temp
-            f = [f ',rmdir(%1$s,''s'')'];
+            f = [f ';rmdir(%1$s,''s'')'];
         end
         if strcmp(p.Results.rename_support,'full')
             namecmd = 'which(mfilename)';
@@ -56,6 +57,10 @@ function sea(archive,varargin)
         else
             namecmd = [' ' outputname outputext ''];
         end
+    end
+    
+    if p.Results.use_comma
+        f = strrep(f,';',',');
     end
 
     scr = sprintf(f,p.Results.var1,p.Results.var2,namecmd,p.Results.main);
