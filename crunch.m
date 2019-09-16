@@ -7,6 +7,7 @@ function crunch(mfile,varargin)
     addParameter(p,'output','',@ischar);
     addParameter(p,'main','z',@ischar);
     addParameter(p,'exe',[]);
+    addParameter(p,'verbose',true);
     addParameter(p,'compressor','zopfli',@(x) any(validatestring(x,expected_compressor)))
     parse(p,mfile,varargin{:});
 
@@ -74,7 +75,9 @@ function crunch(mfile,varargin)
     
     cd(origdir);
     
-    sea(archive,'output',pfile,'main',p.Results.main,varargin{:});
+    final_size = sea(archive,'output',pfile,'main',p.Results.main,varargin{:});
+    
+    fprintf('Final size: %d bytes\n',final_size);
 end
 
 
