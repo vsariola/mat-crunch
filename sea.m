@@ -1,4 +1,4 @@
-function final_size = sea(archive,varargin)
+function [final_size,pcode_size] = sea(archive,varargin)
     expected_rename = {'none','partial','full'};
 
     p = inputParser;
@@ -101,6 +101,7 @@ function final_size = sea(archive,varargin)
     final_data = [pscr data];
     writefile(outputfile,final_data);
     final_size = length(final_data);
+    pcode_size = length(pscr);
 end
 
 function ret = hash(str)

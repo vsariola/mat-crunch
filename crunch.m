@@ -46,8 +46,10 @@ function crunch(mfile,varargin)
         cd(outputpath);
     end
         
+    header_len = -1;
+    data_len = -1;
     if strcmp(p.Results.compressor,'zopfli')
-        zopfli_zip(archivefile,mainfile,'exe',p.Results.exe,varargin{:});
+        [header_len,data_len] = zopfli_zip(archivefile,mainfile,'exe',p.Results.exe,varargin{:});
     elseif strcmp(p.Results.compressor,'advzip')
         zip(archivefile,mainfile);
         exe = p.Results.exe;
@@ -75,9 +77,9 @@ function crunch(mfile,varargin)
     
     cd(origdir);
     
-    final_size = sea(archive,'output',pfile,'main',p.Results.main,varargin{:});
+    [final_len,pcode_len] = sea(archive,'output',pfile,'main',p.Results.main,varargin{:});
     
-    fprintf('Final size: %d bytes\n',final_size);
+    fprintf('Crunched size: %d bytes (pcode: %d, zip-headers: %d, deflated-data: %d)\n',final_len,pcode_len,header_len,data_len);
 end
 
 

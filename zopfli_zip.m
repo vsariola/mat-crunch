@@ -1,4 +1,4 @@
-function zopfli_zip(output,input,varargin)
+function [header_len,data_len] = zopfli_zip(output,input,varargin)
     p = inputParser;
     p.KeepUnmatched = true;
     addRequired(p,'output');
@@ -55,6 +55,9 @@ function zopfli_zip(output,input,varargin)
     data = [fh compressed_data cdfh eocd];
     
     writefile(output,data);
+    
+    header_len = length(fh)+length(cdfh) + length(eocd);
+    data_len = length(compressed_data);
 end
 
 function bytes = fromhex(str)
